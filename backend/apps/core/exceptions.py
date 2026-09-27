@@ -1,6 +1,10 @@
+import logging
+
 from rest_framework import exceptions
 from rest_framework.response import Response
 from rest_framework.views import exception_handler as drf_exception_handler
+
+logger = logging.getLogger('api')
 
 
 class ClientApiError(Exception):
@@ -47,6 +51,15 @@ def custom_exception_handler(exc, context):
 
     response = drf_exception_handler(exc, context)
     if response is None:
+        # 这里返回 500 响应会把异常"吞掉"，django.request 看不到；
+        # 必须在此处记录，否则线上无从排查
+        request = context.get('request')
+        logger.exception(
+            '未处理异常 %s %s user=%s',
+            getattr(request, 'method', '-'),
+            getattr(request, 'path', '-'),
+            getattr(getattr(request, 'user', None), 'pk', None),
+        )
         return Response({'code': 500, 'message': '服务器内部错误', 'data': None}, status=500)
 
     status = response.status_code

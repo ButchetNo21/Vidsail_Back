@@ -119,3 +119,52 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ---------- 日志 ----------
+# logs/django.log -> INFO 及以上全量日志（10MB 轮转，保留 10 份）
+# logs/error.log  -> 仅 ERROR 及以上，生产排查优先看这个文件
+# delay=True 延迟到首次写日志才打开文件，避免 runserver 自动重载的双进程抢文件
+LOG_DIR = BASE_DIR / 'logs'
+LOG_DIR.mkdir(exist_ok=True)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] {levelname} {name} {pathname}:{lineno} - {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler', 'formatter': 'verbose'},
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOG_DIR / 'django.log',
+            'maxBytes': 10 * 1024 * 1024,
+            'backupCount': 10,
+            'encoding': 'utf-8',
+            'formatter': 'verbose',
+            'delay': True,
+        },
+        'error_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOG_DIR / 'error.log',
+            'maxBytes': 10 * 1024 * 1024,
+            'backupCount': 10,
+            'encoding': 'utf-8',
+            'formatter': 'verbose',
+            'level': 'ERROR',
+            'delay': True,
+        },
+    },
+    'loggers': {
+        # 框架层：4xx 警告 + 5xx 错误（含 traceback）
+        'django.request': {'handlers': ['console', 'file', 'error_file'], 'level': 'INFO', 'propagate': False},
+        # 安全类异常（DisallowedHost 等）
+        'django.security': {'handlers': ['console', 'file', 'error_file'], 'level': 'WARNING', 'propagate': False},
+        # 业务代码统一取这个：logger = logging.getLogger('api')
+        'api': {'handlers': ['console', 'file', 'error_file'], 'level': 'INFO', 'propagate': False},
+    },
+    'root': {'handlers': ['console', 'file', 'error_file'], 'level': 'WARNING'},
+}
