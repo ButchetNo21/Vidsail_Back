@@ -1,0 +1,51 @@
+{
+  "pages": [
+    {
+      "path": "pages/login/login",
+      "style": { "navigationBarTitleText": "登录" }
+    },
+    {
+      "path": "pages/dashboard/dashboard",
+      "style": { "navigationBarTitleText": "首页" }
+    },
+    {
+      "path": "pages/cards/cards",
+      "style": { "navigationBarTitleText": "卡密管理" }
+    },
+    {
+      "path": "pages/card-logs/card-logs",
+      "style": { "navigationBarTitleText": "卡密日志" }
+    },
+    {
+      "path": "pages/prompts/prompts",
+      "style": { "navigationBarTitleText": "提示词管理" }
+    },
+    {
+      "path": "pages/terms/terms",
+      "style": { "navigationBarTitleText": "分类与标签" }
+    },
+    {
+      "path": "pages/ads/ads",
+      "style": { "navigationBarTitleText": "广告位管理" }
+    },
+    {
+      "path": "pages/ads/images",
+      "style": { "navigationBarTitleText": "广告图片管理" }
+    },
+    {
+      "path": "pages/configs/configs",
+      "style": { "navigationBarTitleText": "配置管理" }
+    },
+    {
+      "path": "pages/accounts/accounts",
+      "style": { "navigationBarTitleText": "账号管理" }
+    }
+  ],
+  "globalStyle": {
+    "navigationStyle": "custom",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "VidSail 管理后台",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f5f7fa"
+  }
+}
